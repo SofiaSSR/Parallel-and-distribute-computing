@@ -1,5 +1,6 @@
 package co.edu.unal.paralela;
 
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
 
 /**
@@ -165,10 +166,24 @@ public final class ReciprocalArraySum {
             final int numTasks) {
         double sum = 0;
 
-        // Calcula la suma de los recíprocos de los elementos del arreglo
-        for (int i = 0; i < input.length; i++) {
-            sum += 1 / input[i];
+        int nElements = input.length;
+        ReciprocalArraySumTask[] tasks = new ReciprocalArraySumTask[numTasks];
+
+        for (int chunk = 0; chunk <numTasks; chunk++) {
+            ReciprocalArraySumTask task = new ReciprocalArraySumTask(
+                    getChunkStartInclusive(chunk,numTasks,nElements),
+                    getChunkEndExclusive(chunk, numTasks, nElements),
+                    input);
+
+            tasks[chunk] = task;
         }
+
+        ForkJoinTask.invokeAll(tasks);
+
+        for (ReciprocalArraySumTask task: tasks){
+            sum += task.getValue();
+        }
+
 
         return sum;
     }

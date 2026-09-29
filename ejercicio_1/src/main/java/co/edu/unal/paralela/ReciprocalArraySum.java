@@ -164,8 +164,6 @@ public final class ReciprocalArraySum {
 
         task1.join();
 
-        pool.close();
-
         return task1.getValue() + task2.getValue();
     }
 

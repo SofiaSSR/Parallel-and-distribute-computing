@@ -1,6 +1,9 @@
 package co.edu.unal.paralela;
 
+<<<<<<< HEAD
+=======
 import java.util.concurrent.ForkJoinPool;
+>>>>>>> 0e8c608b9f4ab7b595c2605380bd64569281626c
 import java.util.concurrent.RecursiveAction;
 
 /**
@@ -53,7 +56,7 @@ public final class ReciprocalArraySum {
      * @param chunk la sección/trozo (chunk) para cacular la posición de inicio
      * @param nChunks Cantidad de secciones/trozos (chunks) creados
      * @param nElements La cantidad de elementos de la sección/trozo que deben atravesarse
-     * @return El índice inclusivo donde esta sección/trozo (chunk) inicia en el conjunto de 
+     * @return El índice inclusivo donde esta sección/trozo (chunk) inicia en el conjunto de
      *         nElements
      */
     private static int getChunkStartInclusive(final int chunk,
@@ -83,10 +86,18 @@ public final class ReciprocalArraySum {
     }
 
     /**
-     * Este pedazo de clase puede ser completada para para implementar el cuerpo de cada tarea creada
-     * para realizar la suma de los recíprocos del arreglo en paralelo.
+     * Tarea hoja: suma los recíprocos de un único rango [startIndexInclusive, endIndexExclusive)
+     * del arreglo. No se subdivide a sí misma; la división en tareas ocurre una sola vez,
+     * antes de crear las instancias.
      */
     private static class ReciprocalArraySumTask extends RecursiveAction {
+<<<<<<< HEAD
+        private final int startIndexInclusive;
+        private final int endIndexExclusive;
+        private final double[] input;
+        private double value;
+
+=======
         /**         * Iniciar el índice para el recorrido transversal hecho por esta tarea.         */
         private final int startIndexInclusive;/**   * Concluir el índice para el recorrido transversal hecho por esta tarea.         */
         private final int endIndexExclusive;        /**         * Arreglo de entrada para la suma de recíprocos.         */
@@ -99,6 +110,7 @@ public final class ReciprocalArraySum {
          *        * @param setEndIndexExclusive establece el índice final para el recorrido trasversal.
          * @param setInput Valores de entrada
          */
+>>>>>>> 0e8c608b9f4ab7b595c2605380bd64569281626c
         ReciprocalArraySumTask(final int setStartIndexInclusive,
                 final int setEndIndexExclusive, final double[] setInput, final int tSize) {
             this.startIndexInclusive = setStartIndexInclusive;
@@ -107,15 +119,23 @@ public final class ReciprocalArraySum {
             this.numTasks=tSize;
         }
 
-        /**
-         * Adquiere el valor calculado por esta tarea.
-         * @return El valor calculado por esta tarea
-         */
         public double getValue() {
             return this.value;
         }
          @Override
         protected void compute() {
+<<<<<<< HEAD
+            // Copias locales: evita releer campos del objeto en cada iteración
+            // y evita false sharing (solo se escribe "value" una vez, al final).
+            final double[] in = input;
+            final int end = endIndexExclusive;
+            double parcial = 0;
+            for (int i = startIndexInclusive; i < end; i++) {
+                parcial += 1 / in[i];
+            }
+            value = parcial;
+        }
+=======
             if (endIndexExclusive - startIndexInclusive == numTasks) {
                 double parcial = 0;
                 for (int i = startIndexInclusive; i < endIndexExclusive; i++) {
@@ -219,13 +239,11 @@ public final class ReciprocalArraySum {
         
 
        
+>>>>>>> 0e8c608b9f4ab7b595c2605380bd64569281626c
     }
 
     /**
-     * Para hacer: Modificar este método para calcular la misma suma de recíprocos como le realizada en
-     * seqArraySum, pero utilizando dos tareas ejecutándose en paralelo dentro del framework ForkJoin de Java
-     * Se puede asumir que el largo del arreglo de entrada 
-     * es igualmente divisible por 2.
+     * Calcula la suma de recíprocos utilizando exactamente dos tareas en paralelo.
      *
      * @param input Arreglo de entrada
      * @return La suma de los recíprocos del arreglo de entrada
@@ -233,8 +251,23 @@ public final class ReciprocalArraySum {
     protected static double parArraySum(final double[] input) {
         assert input.length % 2 == 0;
 
+<<<<<<< HEAD
+        final int mid = input.length / 2;
+        final ReciprocalArraySumTask left = new ReciprocalArraySumTask(0, mid, input);
+        final ReciprocalArraySumTask right = new ReciprocalArraySumTask(mid, input.length, input);
+=======
         final ReciprocalArraySumTask task = new ReciprocalArraySumTask(0, input.length, input, 2);
+>>>>>>> 0e8c608b9f4ab7b595c2605380bd64569281626c
 
+<<<<<<< HEAD
+        // fork() lanza "left" de forma asíncrona (usa el commonPool automáticamente
+        // si no estamos ya dentro de un ForkJoinPool). "right" se ejecuta en este mismo hilo.
+        left.fork();
+        right.compute();
+        left.join();
+
+        return left.getValue() + right.getValue();
+=======
         //Acá qué se supone que hago?
         task.fork(); // Inicia la tarea en un hilo separado
         task.join(); // Espera a que la tarea termine
@@ -244,13 +277,12 @@ public final class ReciprocalArraySum {
             sum += 1 / input[i];
         }*/
         return task.getValue();
+>>>>>>> 0e8c608b9f4ab7b595c2605380bd64569281626c
     }
 
     /**
-     * Para hacer: extender el trabajo hecho para implementar parArraySum que permita utilizar un número establecido
-     * de tareas para calcular la suma del arreglo recíproco. 
-     * getChunkStartInclusive y getChunkEndExclusive pueden ser útiles para cacular 
-     * el rango de elementos índice que pertenecen a cada sección/trozo (chunk).
+     * Calcula la suma de recíprocos utilizando un número arbitrario de tareas en paralelo.
+     * Se calculan de antemano los numTasks rangos exactos y se lanza una tarea por cada uno.
      *
      * @param input Arreglo de entrada
      * @param numTasks El número de tareas para crear
@@ -258,12 +290,40 @@ public final class ReciprocalArraySum {
      */
     protected static double parManyTaskArraySum(final double[] input,
             final int numTasks) {
+<<<<<<< HEAD
+        final ReciprocalArraySumTask[] tasks = new ReciprocalArraySumTask[numTasks];
+=======
         final ReciprocalArraySumTask task = new ReciprocalArraySumTask(0, input.length, input, numTasks);
+>>>>>>> 0e8c608b9f4ab7b595c2605380bd64569281626c
 
+<<<<<<< HEAD
+        for (int i = 0; i < numTasks; i++) {
+            tasks[i] = new ReciprocalArraySumTask(
+                    getChunkStartInclusive(i, numTasks, input.length),
+                    getChunkEndExclusive(i, numTasks, input.length),
+                    input);
+        }
+
+        // Lanza todas menos la primera; la primera se ejecuta en este hilo
+        // para no desperdiciarlo esperando sin hacer nada.
+        for (int i = 1; i < numTasks; i++) {
+            tasks[i].fork();
+        }
+        tasks[0].compute();
+
+        double sum = tasks[0].getValue();
+        for (int i = 1; i < numTasks; i++) {
+            tasks[i].join();
+            sum += tasks[i].getValue();
+        }
+
+        return sum;
+=======
         //Acá qué se supone que hago?
        task.fork(); // Inicia la tarea en un hilo separado
        task.join(); // Espera a que la tarea termines
 
         return task.getValue();
+>>>>>>> 0e8c608b9f4ab7b595c2605380bd64569281626c
     }
 }

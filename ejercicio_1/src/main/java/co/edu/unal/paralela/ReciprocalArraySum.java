@@ -152,6 +152,7 @@ public final class ReciprocalArraySum {
             getChunkEndExclusive(0, 2, nElements),
             input
         );
+        task1.fork();
 
         ReciprocalArraySumTask task2 = new ReciprocalArraySumTask(
             getChunkStartInclusive(1,2,nElements),
@@ -159,7 +160,6 @@ public final class ReciprocalArraySum {
             input
         );
 
-        task1.fork();
         task2.compute();
 
         task1.join();
@@ -183,23 +183,23 @@ public final class ReciprocalArraySum {
             final int numTasks) {
         double sum = 0;
         assert input.length % 2 == 0;
-
         int nElements = input.length;
         ReciprocalArraySumTask[] tasks = new ReciprocalArraySumTask[numTasks];
 
+        ForkJoinPool pool = new ForkJoinPool(numTasks);
 
         for (int chunk = 0; chunk <numTasks; chunk++) {
             ReciprocalArraySumTask task = new ReciprocalArraySumTask(
                     getChunkStartInclusive(chunk,numTasks,nElements),
                     getChunkEndExclusive(chunk, numTasks, nElements),
                     input);
-
+            pool.submit(task);
             tasks[chunk] = task;
         }
 
-        ForkJoinTask.invokeAll(tasks);
 
         for (ReciprocalArraySumTask task: tasks){
+            task.join();
             sum += task.getValue();
         }
 

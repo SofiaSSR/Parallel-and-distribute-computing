@@ -1,8 +1,6 @@
 package co.edu.unal.paralela;
 
-import java.util.Arrays;
 import java.util.concurrent.ForkJoinTask;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 
 /**
@@ -14,6 +12,16 @@ public final class ReciprocalArraySum {
      * Constructor.
      */
     private ReciprocalArraySum() {
+    }
+
+    /**
+     * Calcula secuencialmente la suma de valores recíprocos para un arreglo.
+     *
+     * @param input Arreglo de entrada
+     * @return La suma de los recíprocos del arreglo de entrada
+     */
+    protected static double seqArraySum(final double[] input) {
+        return seqArraySum(input, 0, input.length);
     }
 
     /**
@@ -148,18 +156,17 @@ public final class ReciprocalArraySum {
         int nElements = input.length;
 
         ReciprocalArraySumTask task1 = new ReciprocalArraySumTask(
-            getChunkStartInclusive(0,2,nElements),
+            getChunkStartInclusive(0, 2, nElements),
             getChunkEndExclusive(0, 2, nElements),
             input
         );
         task1.fork();
 
         ReciprocalArraySumTask task2 = new ReciprocalArraySumTask(
-            getChunkStartInclusive(1,2,nElements),
+            getChunkStartInclusive(1, 2, nElements),
             getChunkEndExclusive(1, 2, nElements),
             input
         );
-
         task2.compute();
 
         task1.join();
@@ -183,21 +190,16 @@ public final class ReciprocalArraySum {
         assert input.length % 2 == 0;
         int nElements = input.length;
         ReciprocalArraySumTask[] tasks = new ReciprocalArraySumTask[numTasks];
-
-        ForkJoinPool pool = new ForkJoinPool(numTasks);
-
-        for (int chunk = 0; chunk <numTasks; chunk++) {
-            ReciprocalArraySumTask task = new ReciprocalArraySumTask(
-                    getChunkStartInclusive(chunk,numTasks,nElements),
+        for (int chunk = 0; chunk < numTasks; chunk++) {
+            tasks[chunk] = new ReciprocalArraySumTask(
+                    getChunkStartInclusive(chunk, numTasks, nElements),
                     getChunkEndExclusive(chunk, numTasks, nElements),
                     input);
-            pool.submit(task);
-            tasks[chunk] = task;
         }
 
+        ForkJoinTask.invokeAll(tasks);
 
-        for (ReciprocalArraySumTask task: tasks){
-            task.join();
+        for (ReciprocalArraySumTask task : tasks) {
             sum += task.getValue();
         }
 

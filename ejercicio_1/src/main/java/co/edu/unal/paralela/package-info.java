@@ -1,4 +1,4 @@
 /**
- * Código fuente del curso de Computación Paralela y Distribuida
+ * Código fuente del curso de Computación Paralela y Distribuida.
  */
 package co.edu.unal.paralela;

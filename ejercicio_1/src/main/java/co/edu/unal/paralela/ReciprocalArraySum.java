@@ -1,8 +1,7 @@
 package co.edu.unal.paralela;
 
-import java.util.Arrays;
-import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
 
 /**

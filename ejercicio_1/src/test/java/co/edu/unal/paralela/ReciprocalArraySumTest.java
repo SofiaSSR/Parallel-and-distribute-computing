@@ -97,10 +97,10 @@ public class ReciprocalArraySumTest extends TestCase {
         }
         final long parEndTime = System.currentTimeMillis();
 
-        final long seqTime = (seqEndTime - seqStartTime) / REPEATS;
-        final long parTime = (parEndTime - parStartTime) / REPEATS;
+        final double seqTime = (double) (seqEndTime - seqStartTime) / REPEATS;
+        final double parTime = (double) (parEndTime - parStartTime) / REPEATS;
 
-        return (double)seqTime / (double)parTime;
+        return seqTime / parTime;
     }
 
     /**

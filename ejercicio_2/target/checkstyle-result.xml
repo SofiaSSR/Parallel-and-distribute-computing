@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="6.11.2">
+<file name="/home/omp/orca/workspaces/Parallel-and-distribute-computing/ejercicio_2/ejercicio_2/src/main/java/co/edu/unal/paralela/package-info.java">
+</file>
+<file name="/home/omp/orca/workspaces/Parallel-and-distribute-computing/ejercicio_2/ejercicio_2/src/main/java/co/edu/unal/paralela/Student.java">
+<error line="3" severity="error" message="First sentence of Javadoc is incomplete (period is missing) or not present." source="com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck"/>
+<error line="46" severity="error" message="First sentence of Javadoc is incomplete (period is missing) or not present." source="com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck"/>
+<error line="54" severity="error" message="First sentence of Javadoc is incomplete (period is missing) or not present." source="com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck"/>
+</file>
+<file name="/home/omp/orca/workspaces/Parallel-and-distribute-computing/ejercicio_2/ejercicio_2/src/main/java/co/edu/unal/paralela/StudentAnalytics.java">
+<error line="147" column="1" severity="error" message="Line contains a tab character." source="com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"/>
+</file>
+</checkstyle>
